@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import AllPagesPDFViewer from "./pdfview";
+import AllPagesPDFViewer from "./pdfviewR";
 import Highlighter from "react-highlight-words";
 
 function Resume_Recommendation() {
@@ -11,6 +11,7 @@ function Resume_Recommendation() {
     const [data, setData] = useState();
     const [jobNumber, setJobNumber] = useState(0);
     const [resumeFile, setResumeFile] = useState();
+    const [files, setFiles] = useState();
     const [matchedSkills, setMatchedSkills] = useState(['Work Experience']);
 
     const fileUpload = (event) => {
@@ -23,7 +24,7 @@ function Resume_Recommendation() {
         console.log(num);
         setJobNumber(num);
         setMatchedSkills(data['Matched Skills'][num]);
-        setResume(num);
+        setResumeFile(files[num]);
     }
 
     const job_data = () => {
@@ -35,7 +36,7 @@ function Resume_Recommendation() {
                 highlightClassName="YourHighlightClass"
                 searchWords={matchedSkills}
                 autoEscape={true}
-                textToHighlight={key + " : " + data[key]}
+                textToHighlight={key + " : " + jobRequirement[key]}
                 /></h4>);
             }
         }
@@ -52,15 +53,18 @@ function Resume_Recommendation() {
         return array
     }
 
-    const setResume = (num) => {
-        axios.post("http://localhost:5000/getResume/"+data[num])
-             .then((response) => {
-                 setResumeFile(response);
-             })
-             .catch((error) => {
-                 console.log(error);
-             })
-    }
+    // const setResume = () => {
+    //     // console.log(files);
+    //     // axios.post("http://localhost:5000/getResume/"+files[jobNumber])
+    //     axios.post("http://localhost:5000/getResume/Resume1.pdf")
+    //          .then((response) => {
+    //              console.log(response);
+    //              setResumeFile(response.data);
+    //          })
+    //          .catch((error) => {
+    //              console.log(error);
+    //          })
+    // }
 
     const onUpload = () => {
         const formData = new FormData();
@@ -68,16 +72,17 @@ function Resume_Recommendation() {
         formData.append("File", uploadFile, uploadFile.name);
 
         axios.post("http://localhost:5000/resumeRecommendation", formData)
-            .then((response) => {
-            setData(response.data);
-            setJobRequirement(response.data['data']);
-            setMatchedSkills(response.data['Matched Skills'][0]);
-            setResume(0);
-            console.log(response.data);
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+             .then((response) => {
+                console.log(response.data);
+                setData(response.data);
+                setJobRequirement(response.data['data']);
+                setFiles(response.data['Files']);
+                setResumeFile(response.data['Files'][0]);
+                setMatchedSkills(response.data['Matched Skills'][0]);
+             })
+             .catch((error) => {
+                console.log(error);
+             });
         setFlag(true);
     }
 

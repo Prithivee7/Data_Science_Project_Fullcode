@@ -93,6 +93,8 @@ export default function AllPages(props) {
   return (
     <Document
       file={props.pdf}
+      // file={{url:"http://localhost:5000/getResume/Resume4619.pdf"}}
+      // file={{url:props.pdf}}
       options={{ workerSrc: "/pdf.worker.js" }}
       onLoadSuccess={onDocumentLoadSuccess}
     >

@@ -1,0 +1,2 @@
+https://medium.com/@vaishaliravisankar/working-with-pdf-in-react-aa737f91f5da
+https://medium.com/analytics-vidhya/receive-or-return-files-flask-api-8389d42b0684

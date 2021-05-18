@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import AllPagesPDFViewer from "./pdfview";
+import AllPagesPDFViewer from "./pdfviewJ";
 import Highlighter from "react-highlight-words";
 
 function Job_Recommendation() {
