@@ -1,3 +1,9 @@
+# Ignore
 *.json
 *.pdf
 *.csv
+*.env
+
+# Allow
+!Deploy/Back End/Jobs.csv
+!Deploy/Back End/Resume Data.csv
