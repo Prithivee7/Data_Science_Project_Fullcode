@@ -13,11 +13,11 @@ function Job_Recommendation() {
   const fileUpload = (event) => {
     setuploadFile(event.target.files[0]);
     setFlag(false);
+    setData();
   }
 
   const buttonClick = (event) => {
     const num = event.target.value-1;
-    console.log(num);
     setJobNumber(num);
     setMatchedSkills(data['Matched Skills'][num]);
   }
@@ -35,6 +35,9 @@ function Job_Recommendation() {
         /></h4>);
       }
     }
+    if (array.length === 0) {
+      return [<h4>Loading Job Details...</h4>]
+    }
     return array;
   }
 
@@ -42,7 +45,7 @@ function Job_Recommendation() {
     const array = []
 
     for(var i = 1; i <= num; i++){
-      array.push(<button value={i} onClick={buttonClick}>{i}</button>)
+      array.push(<button className="buttons black" value={i} onClick={buttonClick}>{i}</button>)
     }
 
     return array
@@ -57,30 +60,46 @@ function Job_Recommendation() {
          .then((response) => {
            setData(response.data);
            setMatchedSkills(response.data['Matched Skills'][0]);
-           console.log(response.data);
          })
          .catch((error) => {
-           console.log(error);
+           alert('Something Went Wrong');
          });
     setFlag(true);
   }
 
+  const download = () => {
+    fetch('http://localhost:5000/sampleResume', {method:'POST',responseType:'arraybuffer'})
+        .then(response => response.arrayBuffer())
+        .then((buffer) => {
+          const blob = new Blob([buffer], { type: 'application/pdf' });
+          let url = window.URL.createObjectURL(blob);
+					let a = document.createElement('a');
+					a.href = url;
+					a.download = 'Resume.pdf';
+					a.click();
+          alert('Success');
+        })
+        .catch(error => alert('Something Went Wrong'));
+  }
+
   return (
     <div>
-      <h1 style={{textAlign:'center'}}>Job Recommendation System</h1>
-      <input type="file" name="file" onChange={fileUpload} />
-      <input type="submit" value="Submit" onClick={onUpload} />
+      <h1 style={{textAlign:'center',margin:'20px',fontFamily:'Comic Sans MS, Garamond, Arial'}}>Job Recommendation System</h1>
       <br></br>
-      <br></br>
-      <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-        {getButtonsUsingForLoop(10)}
+      <div className="submitContainer">
+        <input className="upload-box" type="file" name="file" onChange={fileUpload} />
+        <button className="submit black" type="submit" onClick={onUpload}>Submit</button>
+        <h3 style={{marginLeft: "600px"}}>Download Sample Resume:  </h3>
+        <button className="submit black" type="submit" onClick={download}>Download</button>
       </div>
       <br></br>
       <br></br>
-      {/* <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}> */}
+      {flag ? <div className="buttonsContainer" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>{getButtonsUsingForLoop(10)}</div> : <div></div>}
+      <br></br>
+      <br></br>
       <div style={{display: "flex", flexDirection: "row"}}>
-        {flag ? <AllPagesPDFViewer skills={matchedSkills} pdf={uploadFile} /> : <h6></h6>}
-        {flag ? <div style={{width:'600px'}}>{job_data(jobNumber)}</div> : <h1></h1>}
+        {flag ? <AllPagesPDFViewer skills={matchedSkills} pdf={uploadFile} /> : <div></div>}
+        {flag ? <div style={{width:'600px'}}>{job_data(jobNumber)}</div> : <div></div>}
       </div>
     </div>
   );

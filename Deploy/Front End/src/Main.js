@@ -12,9 +12,15 @@ function Main() {
     }
 
     return (
-        <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: '15rem'}}>
-            <button style={{ marginRight: '5rem' }} onClick={resumeButton} >Upload Resume</button>
-            <button onClick={jobButton} >Upload Job Requirement</button>
+        <div>
+            <h1 style={{textAlign:'center', margin:'20px',fontFamily:'Comic Sans MS, Garamond, Arial'}}>Recommendation System</h1>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: '15rem'}}>
+                {/* <button style={{ marginRight: '5rem' }} onClick={resumeButton}>Upload Resume</button> */}
+                <div className="container">
+                    <button className="skewBtn1 black" style={{ marginRight: '5rem' }} onClick={resumeButton}>Upload Resume</button>
+                    <button className="skewBtn2 black" onClick={jobButton}>Upload Job Requirement</button>
+                </div>
+            </div>
         </div>
     );
 }

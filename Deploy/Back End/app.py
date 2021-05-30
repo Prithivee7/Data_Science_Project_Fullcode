@@ -13,6 +13,7 @@ import json
 import boto3
 from dotenv import load_dotenv
 import os
+import random
 
 
 # In[2]:
@@ -170,21 +171,6 @@ def preprocess(IT_Skills):
         if flag == 0:
             updated_IT_Skills.append(IT_Skill)
     return updated_IT_Skills
-
-
-# In[5]:
-
-
-# buss = pd.read_csv('Job Requirements.csv',low_memory=False)
-# key_skills = buss['Key Skills'].tolist()
-# updated = []
-# for i in key_skills:
-#     if isinstance(i,float):
-#         updated.append('')
-#     else:
-#         updated.append(i)
-# buss['Key Skills'] = updated
-# buss.to_csv('Jobs.csv',index=False)
 
 
 # In[6]:
@@ -497,9 +483,7 @@ def getResumeText(file):
         if j not in resume:
             resume[j] = 'None'
     
-    updated_IT_Skills = preprocess(resume['IT Skills'].split(',')) # Flaw in the length of it skills and it skills experience
-    # print(resume['IT Skills'].split(','))
-    # print(updated_IT_Skills)
+    updated_IT_Skills = preprocess(resume['IT Skills'].split(','))
     df = df.append(resume, ignore_index = True)
     output = recommend_jobs(df)
     matchedSkills = matched_skills(df, output)
@@ -583,10 +567,6 @@ def recommend_resumes(df):
         Resume_IT_Skills = []
         if isinstance(resume['IT Skills'].tolist()[0],str):
             Resume_IT_Skills = [x.lower() for x in resume['IT Skills'].tolist()[0].split(',')]
-        # Resume_IT_Skills = []
-        # for x in resume['IT Skills'].tolist()[0].split(','):
-        #     if isinstance(x,str):
-        #         Resume_IT_Skills.append(x.lower())
     
         IT_Skills_Experience = [float(x) for x in resume['IT Skills Experience'].tolist()[0].split(',')]
         Resume_Key_Skills = [x.lower() for x in resume['Key Skills'].tolist()[0].split(',')]
@@ -631,7 +611,6 @@ def getJobText(file):
 
 
 app = Flask(__name__)
-app.config["Resumes"] = "D:/Second Year/Data-Science-Project/Web Application/Back End/Resumes"
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
@@ -670,20 +649,6 @@ def getJobFile():
     return jsonify(response)
 
 
-# In[16]:
-
-
-@app.route('/getResum/<resume_filename>', methods=['GET'])
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
-def getResum(resume_filename):
-    try:
-        # print(resume_filename)
-        return send_from_directory(app.config["Resumes"], filename=resume_filename)
-    except FileNotFoundError:
-        # print("Buss")
-        return "Something went wrong"
-
-
 # In[17]:
 
 
@@ -691,17 +656,39 @@ def getResum(resume_filename):
 @cross_origin()
 def getResume(resume_filename):
     try:
-        # print(resume_filename)
         s3 = boto3.resource(service_name='s3',region_name='us-east-2',aws_access_key_id=os.getenv('aws_access_key_id'),aws_secret_access_key=os.getenv('aws_secret_access_key'))
         s3.Bucket('recommendation-system-1').download_file(Filename='Resume.pdf',Key=resume_filename)
-        # return send_from_directory(app.config["Resumes"], filename=resume_filename)
         return send_file('Resume.pdf')
     except FileNotFoundError:
-        # print("Buss")
         return "Something went wrong"
 
 
 # In[18]:
+@app.route('/sampleResume', methods=['POST','GET'])
+@cross_origin()
+def sampleResume():
+    arr = [1,2,5,7,11,12,18,21,30,44]
+    resume_filename = 'Resume'+str(arr[random.randint(1,10)-1])+'.pdf'
+    print(resume_filename)
+    try:
+        s3 = boto3.resource(service_name='s3',region_name='us-east-2',aws_access_key_id=os.getenv('aws_access_key_id'),aws_secret_access_key=os.getenv('aws_secret_access_key'))
+        s3.Bucket('recommendation-system-1').download_file(Filename='Resume.pdf',Key=resume_filename)
+        return send_file('Resume.pdf')
+    except FileNotFoundError:
+        return "Something went wrong"
+
+
+@app.route('/sampleJob', methods=['POST','GET'])
+@cross_origin()
+def sampleJob():
+    job_filename = str(random.randint(1,10))+'.json'
+    print(job_filename)
+    try:
+        s3 = boto3.resource(service_name='s3',region_name='us-east-2',aws_access_key_id=os.getenv('aws_access_key_id'),aws_secret_access_key=os.getenv('aws_secret_access_key'))
+        s3.Bucket('recommendation-system-1').download_file(Filename='Job.json',Key=job_filename)
+        return send_file('Job.json')
+    except FileNotFoundError:
+        return "Something went wrong"
 
 
 if __name__ == "__main__":

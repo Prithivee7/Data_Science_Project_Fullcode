@@ -8,7 +8,6 @@ export default function AllPages(props) {
   const width = '900';
 
   useEffect(() => {
-    console.log(props.pdf);
     setArr(props.skills);
   }, [props]);
 
@@ -93,8 +92,6 @@ export default function AllPages(props) {
 
   return (
     <Document
-      // file={props.pdf}
-      // file={{url:"https://github.com/mohiuddinbasha/DataScience_2019501039/blob/master/Resume%201.pdf?raw=true"}}
       file={{url:props.pdf}}
       options={{ workerSrc: "/pdf.worker.js" }}
       onLoadSuccess={onDocumentLoadSuccess}

@@ -9,7 +9,6 @@ function Resume_Recommendation() {
     const [jobRequirement, setJobRequirement] = useState();
     const [flag, setFlag] = useState(false);
     const [data, setData] = useState();
-    const [jobNumber, setJobNumber] = useState(0);
     const [resumeFile, setResumeFile] = useState();
     const [files, setFiles] = useState();
     const [matchedSkills, setMatchedSkills] = useState(['Work Experience']);
@@ -17,12 +16,12 @@ function Resume_Recommendation() {
     const fileUpload = (event) => {
         setuploadFile(event.target.files[0]);
         setFlag(false);
+        setJobRequirement();
+        setResumeFile();
     }
 
     const buttonClick = (event) => {
         const num = event.target.value-1;
-        console.log(num);
-        setJobNumber(num);
         setMatchedSkills(data['Matched Skills'][num]);
         setResumeFile(files[num]);
     }
@@ -31,7 +30,6 @@ function Resume_Recommendation() {
         const array = [];
         for(var key in jobRequirement){
             if (key !== 'Matched Skills' && key !== 'index'){
-                // array.push(<h4>{key} : {data[key][num]}</h4>);
                 array.push(<h4><Highlighter
                 highlightClassName="YourHighlightClass"
                 searchWords={matchedSkills}
@@ -47,24 +45,26 @@ function Resume_Recommendation() {
         const array = []
 
         for(var i = 1; i <= num; i++){
-        array.push(<button value={i} onClick={buttonClick}>{i}</button>)
+        array.push(<button className="buttons black" value={i} onClick={buttonClick}>{i}</button>)
         }
 
         return array
     }
 
-    // const setResume = () => {
-    //     // console.log(files);
-    //     // axios.post("http://localhost:5000/getResume/"+files[jobNumber])
-    //     axios.post("http://localhost:5000/getResume/Resume1.pdf")
-    //          .then((response) => {
-    //              console.log(response);
-    //              setResumeFile(response.data);
-    //          })
-    //          .catch((error) => {
-    //              console.log(error);
-    //          })
-    // }
+    const download = () => {
+        fetch('http://localhost:5000/sampleJob', {method:'POST',responseType:'arraybuffer'})
+            .then(response => response.arrayBuffer())
+            .then((buffer) => {
+              const blob = new Blob([buffer], { type: 'application/json' });
+              let url = window.URL.createObjectURL(blob);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'Job Requirement.json';
+                        a.click();
+              alert('Success');
+            })
+            .catch(error => alert('Something Went Wrong'));
+    }
 
     const onUpload = () => {
         const formData = new FormData();
@@ -73,7 +73,6 @@ function Resume_Recommendation() {
 
         axios.post("http://localhost:5000/resumeRecommendation", formData)
              .then((response) => {
-                console.log(response.data);
                 setData(response.data);
                 setJobRequirement(response.data['data']);
                 setFiles(response.data['Files']);
@@ -81,27 +80,29 @@ function Resume_Recommendation() {
                 setMatchedSkills(response.data['Matched Skills'][0]);
              })
              .catch((error) => {
-                console.log(error);
+                alert('Something Went Wrong');
              });
         setFlag(true);
     }
 
     return (
         <div>
-            <h1 style={{textAlign:'center'}}>Resume Recommendation System</h1>
-            <input type="file" name="file" onChange={fileUpload} />
-            <input type="submit" value="Submit" onClick={onUpload} />
+            <h1 style={{textAlign:'center',margin:'20px',fontFamily:'Comic Sans MS, Garamond, Arial'}}>Resume Recommendation System</h1>
             <br></br>
-            <br></br>
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                {getButtonsUsingForLoop(10)}
+            <div className="submitContainer">
+                <input className="upload-box" type="file" name="file" onChange={fileUpload} />
+                <button className="submit black" type="submit" onClick={onUpload}>Submit</button>
+                <h3 style={{marginLeft: "600px"}}>Download Sample Job Requirement:  </h3>
+                <button className="submit black" type="submit" onClick={download}>Download</button>
             </div>
             <br></br>
             <br></br>
-            {/* <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}> */}
+            {flag ? <div className="buttonsContainer" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>{getButtonsUsingForLoop(10)}</div> : <div></div>}
+            <br></br>
+            <br></br>
             <div style={{display: "flex", flexDirection: "row"}}>
-                {flag ? <AllPagesPDFViewer skills={matchedSkills} pdf={resumeFile} /> : <h6></h6>}
-                {flag ? <div style={{width:'600px'}}>{job_data()}</div> : <h1></h1>}
+                {flag ? <AllPagesPDFViewer skills={matchedSkills} pdf={resumeFile} /> : <div></div>}
+                {flag ? <div style={{width:'600px'}}>{job_data()}</div> : <div></div>}
             </div>
         </div>
     );  
