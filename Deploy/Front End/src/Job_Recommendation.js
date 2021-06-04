@@ -25,7 +25,7 @@ function Job_Recommendation() {
   const job_data = (num) => {
     const array = [];
     for(var key in data){
-      if (key !== 'Matched Skills' && key !== 'index'){
+      if (key !== 'Matched Skills' && key !== 'index' && key !== 'Link'){
         // array.push(<h4>{key} : {data[key][num]}</h4>);
         array.push(<h4><Highlighter
           highlightClassName="YourHighlightClass"
@@ -34,6 +34,9 @@ function Job_Recommendation() {
           textToHighlight={key + " : " + data[key][num]}
         /></h4>);
       }
+    }
+    if (array.length > 0) {
+      array.push(<h4>{"Naukri Link: "}<a href={data["Link"][num]}>{data["Link"][num]}</a></h4>);
     }
     if (array.length === 0) {
       return [<h4>Loading Job Details...</h4>]

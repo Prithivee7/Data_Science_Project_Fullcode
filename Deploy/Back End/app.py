@@ -178,7 +178,8 @@ def preprocess(IT_Skills):
 
 def recommend_jobs(input_resume):
     # Recommend Job Requirements for a given resume
-    job_data = pd.read_csv('Jobs.csv', low_memory=False)
+    # job_data = pd.read_csv('Jobs.csv', low_memory=False)
+    job_data = pd.read_csv('Job Requirements.csv')
     key_skills = job_data['Key Skills'].tolist()
     it_skills = job_data['IT Skills'].tolist()
     for i in range(len(key_skills)):
@@ -487,7 +488,7 @@ def getResumeText(file):
     df = df.append(resume, ignore_index = True)
     output = recommend_jobs(df)
     matchedSkills = matched_skills(df, output)
-    output = output[['Job Title', 'Company', 'Experience', 'Salary', 'Location', 'Job Description', 'Industry Type', 'Functional Area', 'Role Category', 'Key Skills']].reset_index()
+    output = output[['Job Title', 'Company', 'Experience', 'Salary', 'Location', 'Job Description', 'Industry Type', 'Functional Area', 'Role Category', 'Key Skills', 'Link']].reset_index()
     output = output.to_dict()
     output['Matched Skills'] = matchedSkills
     return output

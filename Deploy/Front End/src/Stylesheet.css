@@ -125,6 +125,83 @@
     transform: scale(0.9);
   }
 
+  input[type=text]{
+    width:60%;
+    border:2px solid #aaa;
+    border-radius:4px;
+    /* margin:4px 0; */
+    outline:none;
+    padding:8px;
+    box-sizing:border-box;
+    transition:.3s;
+    font-size: large;
+    font-family: 'Garamond, Arial';
+  }
+  
+  input[type=text]:focus{
+    border-color:black;
+    box-shadow:0 0 10px 0 black;
+  }
+
+  input[type=email]{
+    width:60%;
+    border:2px solid #aaa;
+    border-radius:4px;
+    /* margin:4px 0; */
+    outline:none;
+    padding:8px;
+    box-sizing:border-box;
+    transition:.3s;
+    font-size: large;
+    font-family: 'Garamond, Arial';
+  }
+  
+  input[type=email]:focus{
+    border-color:black;
+    box-shadow:0 0 10px 0 black;
+  }
+
+  textarea{
+    width:60%;
+    height: 200px;
+    border:2px solid #aaa;
+    border-radius:4px;
+    margin:4px 0;
+    outline:none;
+    padding:8px;
+    box-sizing:border-box;
+    transition:.3s;
+    font-size: large;
+    font-family: 'Garamond, Arial';
+  }
+  
+  textarea:focus{
+    border-color:black;
+    box-shadow:0 0 10px 0 black;
+  }
+
+  .formSubmitContainer .formSubmit {
+    width: 120px;
+    height: 35px;
+    outline: none;
+    cursor: pointer;
+    background: none;
+    transition: 0.5s;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    margin-top: 20px;
+    /* border-width: 5px; */
+    /* font-family: "Lato", sans-serif; */
+  }
+
+  .formSubmitContainer .formSubmit:hover {
+    border: none;
+    color: white;
+    font-size: 16px;
+    transform: scale(0.9);
+  }
+
   .black {
     border: 2px solid #000000;
     color: #000000;

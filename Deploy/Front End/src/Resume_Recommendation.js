@@ -29,7 +29,7 @@ function Resume_Recommendation() {
     const job_data = () => {
         const array = [];
         for(var key in jobRequirement){
-            if (key !== 'Matched Skills' && key !== 'index'){
+            if (key !== 'Matched Skills' && key !== 'index' && key !== 'Link'){
                 array.push(<h4><Highlighter
                 highlightClassName="YourHighlightClass"
                 searchWords={matchedSkills}
@@ -38,6 +38,9 @@ function Resume_Recommendation() {
                 /></h4>);
             }
         }
+        if (array.length > 0) {
+            array.push(<h4>{"Naukri Link: "}<a href={jobRequirement["Link"]}>{jobRequirement["Link"]}</a></h4>);
+          }
         return array;
     }
 
