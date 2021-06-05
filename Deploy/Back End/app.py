@@ -691,6 +691,65 @@ def sampleJob():
     except FileNotFoundError:
         return "Something went wrong"
 
+@app.route('/resumeForm', methods=['POST'])
+@cross_origin()
+def resumeForm():
+    # try:
+        data = request.get_json()
+        
+        data['IT_Skills'] = ','.join([x.strip() for x in data['IT_Skills'].split(',')])
+
+        IT_Skills = []
+        IT_Skills_Experience = []
+
+        for element in data['IT_Skills'].split(','):
+            index1 = element.index('(')
+            # index2 = element.index(')')
+            IT_Skills.append(element[0:index1])
+            exp = element[index1+1:].split(' ')
+            experience_years = 0
+            experience_months = 0
+            if 'year(s)' in exp:
+                experience_years = exp[exp.index('year(s)') - 1]
+            if 'month(s)' in exp:
+                experience_months = exp[exp.index('month(s)') - 1]
+            exp = str(experience_years)+"."+str(experience_months)
+            IT_Skills_Experience.append(exp)
+        
+        data['IT_Skills'] = ",".join(IT_Skills)
+
+        cols = ['Current Location', 'Preferred Location', 'Functional Area', 'Industry', 'Total Experience', 'Highest Degree', 'UG', 'PG', 'Category', 'Job Type', 'Employment Status', 'Physically Challenged', 'Key Skills', 'Name', 'Role', 'Summary', 'IT Skills', 'IT Skills Experience','Languages Known', 'Work Experience', 'Resume']
+        df = pd.DataFrame(columns = cols)
+
+        resume = {}
+
+        resume['Current Location'] = data['location']
+        resume['Preferred Location'] = resume['Functional Area'] = resume['Industry'] = 'None'
+        resume['Total Experience'] = data['experience']
+        resume['Highest Degree'] = 'None'
+        resume['UG'] = data['ug']
+        resume['PG'] = data['pg']
+        resume['Category'] = resume['Job Type'] = resume['Employment Status'] = resume['Physically Challenged'] = resume['Key Skills'] = resume['Resume'] = 'None'
+        resume['Name'] = data['name']
+        resume['Role'] = data['role']
+        resume['IT Skills Experience'] = ','.join(IT_Skills_Experience)
+        resume['Summary'] = data['summary']
+        resume['Work Experience'] = data['workExperience']
+        resume['IT Skills'] = data['IT_Skills']
+        resume['Languages Known'] = data['languages']
+
+        updated_IT_Skills = preprocess(resume['IT Skills'].split(','))
+        df = df.append(resume, ignore_index = True)
+        output = recommend_jobs(df)
+        matchedSkills = matched_skills(df, output)
+        output = output[['Job Title', 'Company', 'Experience', 'Salary', 'Location', 'Job Description', 'Industry Type', 'Functional Area', 'Role Category', 'Key Skills', 'Link']].reset_index()
+        output = output.to_dict()
+        output['Matched Skills'] = matchedSkills
+        return output
+    # except Exception as e:
+    #     print(e)
+    #     return "Something went wrong! Check the format of the resume form and try again"
+
 
 if __name__ == "__main__":
   app.run(debug=True, use_reloader=False)
