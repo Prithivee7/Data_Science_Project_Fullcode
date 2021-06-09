@@ -485,6 +485,7 @@ def getResumeText(file):
             resume[j] = 'None'
     
     updated_IT_Skills = preprocess(resume['IT Skills'].split(','))
+    resume['IT Skills'] = ",".join(updated_IT_Skills) #Logic change
     df = df.append(resume, ignore_index = True)
     output = recommend_jobs(df)
     matchedSkills = matched_skills(df, output)
@@ -739,6 +740,7 @@ def resumeForm():
         resume['Languages Known'] = data['languages']
 
         updated_IT_Skills = preprocess(resume['IT Skills'].split(','))
+        resume['IT Skills'] = ",".join(updated_IT_Skills)
         df = df.append(resume, ignore_index = True)
         output = recommend_jobs(df)
         matchedSkills = matched_skills(df, output)
@@ -750,9 +752,49 @@ def resumeForm():
     #     print(e)
     #     return "Something went wrong! Check the format of the resume form and try again"
 
+@app.route('/jobForm', methods=['POST'])
+@cross_origin()
+def jobForm():
+    # try:
+        data = request.get_json()
+        original = data.copy()
+
+        data['IT_Skills'] = ','.join([x.strip() for x in data['IT_Skills'].split(',')])
+        data['location'] = ','.join([x.strip() for x in data['location'].split(',')])
+
+        columns = ['Job Title', 'Company', 'Experience', 'Salary', 'Location', 'Job Description', 'Link', 'Role', 'Industry Type', 'Functional Area', 'Employment', 'Role Category', 'UG', 'PG', 'Doctorate', 'Key Skills']
+
+        job = {}
+
+        job['Job Title'] = data['title']
+        job['Company'] = data['company']
+        job['Experience'] = data['experience']
+        job['Salary'] = data['salary'].lower()
+        job['Location'] = data['location']
+        job['Job Description'] = data['job_description']
+        job['Link'] = job['Industry Type'] = job['Functional Area'] = job['Employment'] = job['Role Category'] = 'None'
+        job['UG'] = data['ug']
+        job['PG'] = data['pg']
+        job['Doctorate'] = data['doctorate']
+        job['Key Skills'] = ",".join(preprocess(data['IT_Skills'].split(',')))
+
+        df = pd.DataFrame(columns=columns)
+        df = df.append(job, ignore_index=True)
+        df = addITSkills(df)
+        output = recommend_resumes(df)
+        matchedSkills = matched_skills(df, output)
+        files = ["http://localhost:5000/getResume/Resume"+str(x+1)+".pdf" for x in list(output.index)]
+        out = {}
+        # with open('./Resumes/Resume1.pdf') as f:
+        #     out['Resume'] = io.BytesIO(f.read())
+        out['data'] = {"Job Title":original["title"],"Company":original['company'],"Location":original['location'],"Email":original['email'],'Role':original['role'],'Experience':original['experience'],"Salary":original['salary'],"UG":original['ug'],"PG":original['pg'],"Doctorate":original['doctorate'],"IT Skills":original['IT_Skills'],"Job Description":original['job_description']}
+        out['Files'] = files
+        out['Matched Skills'] = matchedSkills
+        return out
+
 
 if __name__ == "__main__":
-  app.run(debug=True, use_reloader=False)
+  app.run(debug=True, use_reloader=True)
 
 
 # In[ ]:

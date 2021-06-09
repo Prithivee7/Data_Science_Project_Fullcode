@@ -21,6 +21,14 @@ function Main() {
                     <button className="skewBtn2 black" onClick={jobButton}>Upload Job Requirement</button>
                 </div>
             </div>
+            <br></br>
+            <br></br>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: '5rem'}}>
+                <div className="container">
+                    <button className="skewBtn1 black" style={{ marginRight: '5rem' }} onClick={() => history.push('/resume-form')}>Fill Resume</button>
+                    <button className="skewBtn2 black" onClick={() => history.push('/job-form')}>Fill Job Requirement</button>
+                </div>
+            </div>
         </div>
     );
 }

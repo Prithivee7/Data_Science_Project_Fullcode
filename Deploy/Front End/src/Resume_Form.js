@@ -73,27 +73,11 @@ const Resume_Form = () => {
         array.push(<h4 style={{textAlign:'justify'}}><Highlighter highlightClassName="YourHighlightClass" searchWords={matchedSkills} autoEscape={true} textToHighlight={"Languages : " + languages}/></h4>);
         array.push(<h4 style={{textAlign:'justify'}}><Highlighter highlightClassName="YourHighlightClass" searchWords={matchedSkills} autoEscape={true} textToHighlight={"Summary : " + summary}/></h4>);
         array.push(<h4 style={{textAlign:'justify'}}><Highlighter highlightClassName="YourHighlightClass" searchWords={matchedSkills} autoEscape={true} textToHighlight={"Work Experience : " + workExperience}/></h4>);
-        // if (array.length === 0) {
-        //     return [<h4>Loading Job Details...</h4>]
-        // }
         return array;
     }
 
     const afterSubmit = (event) => {
         event.preventDefault();
-        // console.log("Name: "+name);
-        // console.log("Email: "+email);
-        // console.log("Location: "+location);
-        // console.log("Company: "+company);
-        // console.log("Role: "+role);
-        // console.log("Experience: "+experience);
-        // console.log("UG: "+ug);
-        // console.log("PG: "+pg);
-        // console.log("Doctorate: "+doctorate);
-        // console.log("IT Skills: "+IT_Skills);
-        // console.log("Languages: "+languages);
-        // console.log("Summary: "+summary);
-        // console.log("Work Experience: "+workExperience);
         let data = {name: name, email: email, location: location, company: company, role: role, experience: experience, ug: ug, pg: pg, doctorate: doctorate,
                     IT_Skills: IT_Skills, languages: languages, summary: summary, workExperience: workExperience};
         axios.post("http://localhost:5000/resumeForm", data)
