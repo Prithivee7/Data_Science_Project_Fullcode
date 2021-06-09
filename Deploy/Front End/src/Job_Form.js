@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import AllPagesPDFViewer from "./pdfviewR";
 import Highlighter from "react-highlight-words";
@@ -23,6 +23,13 @@ const Job_Form = () => {
     const [files, setFiles] = useState();
     const [matchedSkills, setMatchedSkills] = useState(['Work Experience']);
 
+    useEffect(() => {
+        window.scrollTo({
+            top: 0, 
+            behavior: 'smooth'
+        });
+    }, [flag])
+    
     const buttonClick = (event) => {
         const num = event.target.value-1;
         setMatchedSkills(data['Matched Skills'][num]);
@@ -61,11 +68,12 @@ const Job_Form = () => {
         let data = {title: title, company: company, location: location, email: email, role: role, experience: experience, salary: salary, ug: ug, pg: pg, doctorate: doctorate, IT_Skills: IT_Skills, job_description: job_description};
         axios.post("http://localhost:5000/jobForm", data)
              .then((response) => {
-                console.log(response);
+                // console.log(response);
                 setData(response.data);
                 setFiles(response.data['Files']);
                 setResumeFile(response.data['Files'][0]);
                 setMatchedSkills(response.data['Matched Skills'][0]);
+                window.scrollTo({top: 0, behavior: "smooth"})
              })
              .catch((error) => {
                 alert('Something went wrong! Check the format of the job form and try again');
