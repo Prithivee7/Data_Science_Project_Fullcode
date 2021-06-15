@@ -12,6 +12,7 @@ function Resume_Recommendation() {
     const [resumeFile, setResumeFile] = useState();
     const [files, setFiles] = useState();
     const [matchedSkills, setMatchedSkills] = useState(['Work Experience']);
+    const [link, setLink] = useState('');
 
     const fileUpload = (event) => {
         setuploadFile(event.target.files[0]);
@@ -38,9 +39,6 @@ function Resume_Recommendation() {
                 /></h4>);
             }
         }
-        if (array.length > 0) {
-            array.push(<h4>{"Naukri Link: "}<a href={jobRequirement["Link"]}>{jobRequirement["Link"]}</a></h4>);
-          }
         return array;
     }
 
@@ -78,6 +76,7 @@ function Resume_Recommendation() {
              .then((response) => {
                 setData(response.data);
                 setJobRequirement(response.data['data']);
+                setLink(response.data['data']['Link']);
                 setFiles(response.data['Files']);
                 setResumeFile(response.data['Files'][0]);
                 setMatchedSkills(response.data['Matched Skills'][0]);
@@ -102,6 +101,13 @@ function Resume_Recommendation() {
             <br></br>
             {flag ? <div className="buttonsContainer" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>{getButtonsUsingForLoop(10)}</div> : <div></div>}
             <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
+                {flag ? <div className="submitContainer"><a href="https://naukrirecruiter.naukri.com" target="_blank" rel="noreferrer"><button className="submit yellow" style={{marginRight:"600px"}}>Contact</button></a></div> : <div></div>}
+                {flag ? <div className="submitContainer"><a href={link} target="_blank" rel="noreferrer"><button className="submit yellow">Apply</button></a></div> : <div></div>}
+            </div>
             <br></br>
             <div style={{display: "flex", flexDirection: "row"}}>
                 {flag ? <AllPagesPDFViewer skills={matchedSkills} pdf={resumeFile} /> : <div></div>}

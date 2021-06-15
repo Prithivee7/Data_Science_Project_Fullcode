@@ -20,6 +20,7 @@ const Resume_Form = () => {
     const [data, setData] = useState();
     const [jobNumber, setJobNumber] = useState(0);
     const [matchedSkills, setMatchedSkills] = useState(['Work Experience']);
+    const [link, setLink] = useState('');
 
     useEffect(() => {
         window.scrollTo({
@@ -42,6 +43,7 @@ const Resume_Form = () => {
         const num = event.target.value-1;
         setJobNumber(num);
         setMatchedSkills(data['Matched Skills'][num]);
+        setLink(data['Link'][num]);
     }
 
     const job_data = (num) => {
@@ -55,9 +57,6 @@ const Resume_Form = () => {
                 textToHighlight={key + " : " + data[key][num]}
             /></h4>);
             }
-        }
-        if (array.length > 0) {
-            array.push(<h4>{"Naukri Link: "}<a href={data["Link"][num]}>{data["Link"][num]}</a></h4>);
         }
         if (array.length === 0) {
             return [<h4>Loading Job Details...</h4>]
@@ -92,6 +91,7 @@ const Resume_Form = () => {
                 // console.log(response);
                 setData(response.data);
                 setMatchedSkills(response.data['Matched Skills'][0]);
+                setLink(response.data['Link'][0]);
                 setFlag(true);
              })
              .catch((error) => {
@@ -109,6 +109,12 @@ const Resume_Form = () => {
                         <div className="buttonsContainer" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>{getButtonsUsingForLoop(10)}</div>
                         <br></br>
                         <br></br>
+                        <br></br>
+                        <br></br>
+                        <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
+                            <div className="submitContainer"><button className="submit yellow" type="submit" onClick={() => alert('Send mail to '+email)} style={{marginRight:"600px"}}>Contact</button></div>
+                            <div className="submitContainer"><a href={link} target="_blank" rel="noreferrer"><button className="submit yellow">Apply</button></a></div>
+                        </div>
                         <br></br>
                         <div style={{display: "flex", flexDirection: "row"}}>
                             <div style={{width:'45%', marginRight:'100px'}}>{resume_data()}</div>

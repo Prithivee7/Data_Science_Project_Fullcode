@@ -9,6 +9,7 @@ function Job_Recommendation() {
   const [data, setData] = useState();
   const [jobNumber, setJobNumber] = useState(0);
   const [matchedSkills, setMatchedSkills] = useState(['Work Experience']);
+  const [link, setLink] = useState('');
 
   const fileUpload = (event) => {
     setuploadFile(event.target.files[0]);
@@ -20,6 +21,7 @@ function Job_Recommendation() {
     const num = event.target.value-1;
     setJobNumber(num);
     setMatchedSkills(data['Matched Skills'][num]);
+    setLink(data['Link'][num]);
   }
 
   const job_data = (num) => {
@@ -34,9 +36,6 @@ function Job_Recommendation() {
           textToHighlight={key + " : " + data[key][num]}
         /></h4>);
       }
-    }
-    if (array.length > 0) {
-      array.push(<h4>{"Naukri Link: "}<a href={data["Link"][num]}>{data["Link"][num]}</a></h4>);
     }
     if (array.length === 0) {
       return [<h4>Loading Job Details...</h4>]
@@ -63,6 +62,7 @@ function Job_Recommendation() {
          .then((response) => {
            setData(response.data);
            setMatchedSkills(response.data['Matched Skills'][0]);
+           setLink(response.data['Link'][0]);
          })
          .catch((error) => {
            alert('Something Went Wrong');
@@ -99,6 +99,13 @@ function Job_Recommendation() {
       <br></br>
       {flag ? <div className="buttonsContainer" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>{getButtonsUsingForLoop(10)}</div> : <div></div>}
       <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
+        {flag ? <div className="submitContainer"><a href="https://naukrirecruiter.naukri.com" target="_blank" rel="noreferrer"><button className="submit yellow" style={{marginRight:"600px"}}>Contact</button></a></div> : <div></div>}
+        {flag ? <div className="submitContainer"><a href={link} target="_blank" rel="noreferrer"><button className="submit yellow">Apply</button></a></div> : <div></div>}
+      </div>
       <br></br>
       <div style={{display: "flex", flexDirection: "row"}}>
         {flag ? <AllPagesPDFViewer skills={matchedSkills} pdf={uploadFile} /> : <div></div>}

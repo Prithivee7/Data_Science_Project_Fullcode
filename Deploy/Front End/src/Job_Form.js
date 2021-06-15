@@ -92,6 +92,12 @@ const Job_Form = () => {
                         <br></br>
                         <br></br>
                         <br></br>
+                        <br></br>
+                        <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
+                            <div className="submitContainer"><a href="https://naukrirecruiter.naukri.com" target="_blank" rel="noreferrer"><button className="submit yellow" style={{marginRight:"600px"}}>Contact</button></a></div>
+                            <div className="submitContainer"><button type="submit" className="submit yellow" onClick={() => alert("Send mail to "+email)}>Apply</button></div>
+                        </div>
+                        <br></br>
                         <div style={{display: "flex", flexDirection: "row"}}>
                             <AllPagesPDFViewer skills={matchedSkills} pdf={resumeFile} />
                             <div style={{width:'600px'}}>{job_data()}</div>
